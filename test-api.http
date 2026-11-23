@@ -1,0 +1,28 @@
+### Get all blog posts
+GET http://localhost:8080/api/posts
+
+### Create a new blog post
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+
+{
+    "title": "My First Blog Post",
+    "content": "This is my first blog post created using Spring Boot, Java, and MySQL. I am learning how to build REST APIs and connect them with a database."
+}
+### Get all blog posts
+GET http://localhost:8080/api/posts
+### Get blog post by ID
+GET http://localhost:8080/api/posts/1
+
+### Update blog post
+PUT http://localhost:8080/api/posts/1
+Content-Type: application/json
+
+{
+    "title": "My Updated Blog Post",
+    "content": "I have successfully learned how to create and retrieve blog posts using Spring Boot, Java, REST APIs and MySQL. Now I am learning how to update existing posts."
+}
+### Delete blog post
+DELETE http://localhost:8080/api/posts/2
+### Get all posts after deletion
+GET http://localhost:8080/api/posts
