@@ -2,8 +2,12 @@
 package com.rishi.blog.service;
 
 import com.rishi.blog.entity.Post;
+import com.rishi.blog.entity.User;
+import com.rishi.blog.exception.PostNotFoundException;
 import com.rishi.blog.repository.PostRepository;
+import com.rishi.blog.repository.UserRepository;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,29 +16,50 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(
+            PostRepository postRepository,
+            UserRepository userRepository) {
+
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
-    // Create a new blog post
+    private String getCurrentUserEmail() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+    }
+
     public Post createPost(Post post) {
+
+        String email = getCurrentUserEmail();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new RuntimeException("User not found"));
+
+        post.setUser(user);
+
         return postRepository.save(post);
     }
 
-    // Get all blog posts
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postRepository.findByUserEmail(
+                getCurrentUserEmail());
     }
 
-    // Get a single post by ID
     public Post getPostById(Long id) {
-        return postRepository.findById(id)
+
+        String email = getCurrentUserEmail();
+
+        return postRepository.findByIdAndUserEmail(id, email)
                 .orElseThrow(() ->
-                    new RuntimeException("Post not found with ID: " + id));
+                    new PostNotFoundException(
+                        "Post not found with ID: " + id));
     }
 
-    // Update an existing blog post
     public Post updatePost(Long id, Post updatedPost) {
 
         Post existingPost = getPostById(id);
@@ -45,7 +70,6 @@ public class PostService {
         return postRepository.save(existingPost);
     }
 
-    // Delete a blog post
     public void deletePost(Long id) {
 
         Post existingPost = getPostById(id);

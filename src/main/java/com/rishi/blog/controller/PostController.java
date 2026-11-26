@@ -32,7 +32,7 @@ public class PostController {
         return ResponseEntity.ok(savedPost);
     }
 
-    // Get all posts
+    // Get all posts of the logged-in user
     @GetMapping
     public ResponseEntity<List<Post>> getAllPosts() {
 
@@ -41,7 +41,7 @@ public class PostController {
         );
     }
 
-    // Get post by ID
+    // Get a post by ID
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(
             @PathVariable Long id) {
@@ -51,7 +51,7 @@ public class PostController {
         );
     }
 
-    // Update post
+    // Update a post
     @PutMapping("/{id}")
     public ResponseEntity<Post> updatePost(
             @PathVariable Long id,
@@ -62,7 +62,7 @@ public class PostController {
         );
     }
 
-    // Delete post
+    // Delete a post
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(
             @PathVariable Long id) {
